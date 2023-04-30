@@ -17,6 +17,8 @@ public class Weapon : MonoBehaviour
     private bool isReloading = false;
     private float reloadTime;
 
+    Vector3 oldPostion;
+
     private void Update()
     {
         // Vector3 mousePosition = Input.mousePosition;
@@ -57,12 +59,13 @@ public class Weapon : MonoBehaviour
         // }
     }
 
-    public void Look(InputAction.CallbackContext context)
+    public void LookMouse(InputAction.CallbackContext context)
     {
 
         // Vector2 position = Mouse.current.position.ReadValue();
 
         Vector2 position = context.ReadValue<Vector2>();
+        // Debug.Log(position);
         Vector3 pos = new Vector3(position.x, position.y, 0);
         // Convert the mouse position to world coordinates
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(position.x, position.y, 10.0f));
@@ -71,12 +74,36 @@ public class Weapon : MonoBehaviour
         Vector3 direction = worldPosition - shootPoint.position;
 
         // Calculate the angle between the direction vector and the positive x-axis
-        float angle1 = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;     
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         float angle2 = Mathf.Atan2(position.y, position.x) * Mathf.Rad2Deg;
 
 
-        shootPoint.rotation = Quaternion.AngleAxis(angle1, Vector3.forward);
-        shootPoint.position = Player.position + direction.normalized * 0.5f;
+        shootPoint.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        shootPoint.position = Player.position + direction.normalized;// * 0.5f;
+    }
+    public void LookController(InputAction.CallbackContext context)
+    {
+
+        // Vector2 position = Mouse.current.position.ReadValue();
+
+        Vector2 position = context.ReadValue<Vector2>();
+        Debug.Log(position);
+        Vector3 pos = new Vector3(position.x, position.y, 0);
+        // // Convert the mouse position to world coordinates
+        // Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(position.x, position.y, 10.0f));
+
+        // // Calculate the direction vector between the player and the mouse
+        // Vector3 direction = worldPosition - shootPoint.position;
+
+        // // Calculate the angle between the direction vector and the positive x-axis
+        float angle = Mathf.Atan2(position.y, position.x) * Mathf.Rad2Deg;
+        // float angle2 = Mathf.Atan2(position.y, position.x) * Mathf.Rad2Deg;
+
+
+        // shootPoint.rotation = Quaternion.AngleAxis(angle1, Vector3.forward);
+        shootPoint.position = Player.position + pos * 0.5f;
+        shootPoint.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        // shootPoint.position = Player.position + direction.normalized * 0.5f;
     }
     public void Fire(InputAction.CallbackContext context)
     {
